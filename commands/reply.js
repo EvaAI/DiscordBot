@@ -1,21 +1,21 @@
 module.exports = {
   getInfo: function () {
     var info = {
-      'name': 'invite',
+      'name': 'reply',
       'permissionLevel': 'everyone',
-      'man': '`' + process.env.PREFIX + 'invite`\nDisplays the bot\'s invite'
+      'man': '`' + process.env.PREFIX + 'reply to your message'
     }
     return info
   },
   command: function (msg, params) {
-    var inviteEmbed = {
+    var replyEmbed = {
       'embed': {
-        'title': 'Invite the bot',
+        'title': 'Reply to your message',
         'color': 0xffb6c1,
         'thumbnail': {
           'url': msg.client.user.avatarURL
         },
-        'description': `You can invite the bot using [this link](https://discordapp.com/oauth2/authorize?client_id=${msg.client.user.id}&scope=bot&permissions=0)`,
+        'description': `Hi!`,
         'timestamp': new Date().toISOString(),
         'footer': {
           'text': `${msg.author.tag}`,
@@ -23,6 +23,6 @@ module.exports = {
         }
       }
     }
-    msg.channel.send(inviteEmbed)
+    msg.channel.send(replyEmbed)
   }
 }

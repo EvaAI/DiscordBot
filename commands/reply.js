@@ -3,7 +3,7 @@ module.exports = {
     var info = {
       'name': 'reply',
       'permissionLevel': 'everyone',
-      'man': '`' + 'Replies to your message'
+      'man': 'Replies to your message'
     }
     return info
   },

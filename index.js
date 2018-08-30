@@ -22,7 +22,8 @@ var names = []
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
-  client.user.setGame('\!help')
+  var guilds1 = client.guilds;
+  client.user.setGame('\!help' + guilds1)
   fs.readdirSync('./commands').forEach(file => {
     commands.push({
       'info': require('./commands/' + file).getInfo(),

@@ -140,5 +140,5 @@ client.on('message', msg => {
     }
   }
 })
-client.user.setActivity('over u guys', { type: 'WATCHING' })
+bot.user.setGame('hi')
 client.login(process.env.DISCORD_TOKEN)

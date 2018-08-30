@@ -22,7 +22,7 @@ var names = []
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
-  client.user.setGame('xD')
+  client.user.setGame('\!help')
   fs.readdirSync('./commands').forEach(file => {
     commands.push({
       'info': require('./commands/' + file).getInfo(),

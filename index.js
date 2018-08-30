@@ -22,6 +22,7 @@ var names = []
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
+  client.user.setGame('xD')
   fs.readdirSync('./commands').forEach(file => {
     commands.push({
       'info': require('./commands/' + file).getInfo(),
@@ -140,5 +141,4 @@ client.on('message', msg => {
     }
   }
 })
-client.user.setGame("xD")
 client.login(process.env.DISCORD_TOKEN)

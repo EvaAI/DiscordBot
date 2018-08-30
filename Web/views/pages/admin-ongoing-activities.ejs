@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= serverData.name %> Ongoing Activities - GAwesomeBot Admin Console</title>
+	<% include ../partials/head %>
+
+	<script>
+	let isEnding = false;
+	function endSession(id, type) {
+		if (isEnding) return;
+		isEnding = true;
+	  	$(`#endSession-${type}-${id}`).html("Ending Game...");
+		$.ajax({
+			type: "POST",
+			url: "<%= currentPage %>?svrid=<%= serverData.id %>",
+			data: {
+				"end-type": type,
+				"end-id": id
+			},
+			success: function() {
+				$(`#endSession-${type}-${id}`).html(`${type === "trivia" ? "Game" : "Activity"} ended.`).attr("onclick", null);
+			}
+		});
+	}
+	</script>
+</head>
+<body>
+	<% include ../partials/dashboard-header %>
+	<% include ../partials/dashboard-socket-updates %>
+
+	<section class="section is-white">
+		<div class="container">
+			<div class="columns">
+				<div id="menu" class="column is-one-quarter">
+					<% include ../partials/admin-menu %>
+				</div>
+				<div class="column">
+					<h1 class="title">
+						Ongoing Activities
+					</h1>
+					<article class="message is-primary">
+						<div class="message-body">
+							<div class="content">
+								Here you can see a list of the ongoing <strong>trivia games, polls, giveaways, and point lotteries</strong> on the server. Details about each session are listed below and you can force-end one with the click of a button.
+							</div>
+						</div>
+					</article>
+					<h4 class="subtitle is-4">
+						Trivia
+					</h4>
+					<% if(trivia.length > 0) { %>
+						<div class="columns">
+							<% for (let i = 0; i < trivia.length; i++) { %>
+								<div class="column is-half">
+									<div class="card is-fullwidth">
+										<header class="card-header">
+											<p class="card-header-title">
+												#<%= trivia[i].channel.name %>
+											</p>
+										</header>
+										<div class="card-content">
+											<h3 class="title is-3 has-text-centered">
+												<%= trivia[i].set === "default" ? "No Custom Set" : trivia[i].set.charAt(0).toUpperCase() + trivia[i].set.slice(1) %>
+											</h3>
+											<div class="level is-mobile">
+												<div class="level-item has-text-centered">
+													<div>
+														<p class="heading">Questions</p>
+														<p class="title"><%= trivia[i].max_score %></p>
+													</div>
+												</div>
+												<div class="level-item has-text-centered">
+													<div>
+														<p class="heading">Score</p>
+														<p class="title"><%= trivia[i].score %></p>
+													</div>
+												</div>
+												<div class="level-item has-text-centered">
+													<div>
+														<p class="heading">Players</p>
+														<p class="title"><%= trivia[i].responders %></p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<footer class="card-footer">
+											<a onclick="endSession('<%= trivia[i].channel.id %>', 'trivia');" id="endSession-trivia-<%= trivia[i].channel.id %>" class="card-footer-item">
+												End Game
+											</a>
+										</footer>
+									</div>
+								</div>
+								<% if(i % 2 === 1 && i !== trivia.length - 1 && i !== 0) { %>
+									</div>
+									<div class="columns">
+								<% } %>
+							<% } %>
+							</div>
+					<% } else { %>
+						<article class="message">
+							<div class="message-header">
+								<p>
+									<span class="icon">
+										<i class="fa fa-meh-o"></i>
+									</span>
+									Nothing to see here
+								</p>
+							</div>
+							<div class="message-body">
+								There aren't any ongoing trivia games on this server. Use <code><%= commandPrefix %>trivia start</code> to start one.
+							</div>
+						</article>
+					<% } %>
+					<h4 class="subtitle is-4">
+						Polls
+					</h4>
+					<% if(polls.length>0) { %>
+						<div class="columns">
+							<% for (let i = 0; i < polls.length; i++) { %>
+								<div class="column is-half">
+									<div class="card is-fullwidth">
+										<header class="card-header">
+											<p class="card-header-title">
+												#<%= polls[i].channel.name %>
+											</p>
+										</header>
+										<div class="card-content">
+											<h3 class="title is-3 has-text-centered">
+												<%= polls[i].title %>
+											</h3>
+											<h5 class="subtitle is-5 has-text-centered">
+												Created by <strong>@<%= polls[i].creator %></strong> <span title="<%= polls[i].rawCreated %>"><%= polls[i].relativeCreated %></span>
+											</h5>
+											<div class="level is-mobile">
+												<div class="level-item has-text-centered">
+													<div>
+														<p class="heading">Options</p>
+														<p class="title"><%= polls[i].options %></p>
+													</div>
+												</div>
+												<div class="level-item has-text-centered">
+													<div>
+														<p class="heading">Responses</p>
+														<p class="title"><%= polls[i].responses %></p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<footer class="card-footer">
+											<a onclick="endSession('<%= polls[i].channel.id %>', 'poll');" id="endSession-poll-<%= polls[i].channel.id %>" class="card-footer-item">
+												End Poll
+											</a>
+										</footer>
+									</div>
+								</div>
+								<% if (i % 2 === 1 && i !== polls.length - 1 && i !== 0) { %>
+									</div>
+									<div class="columns">
+								<% } %>
+							<% } %>
+						</div>
+					<% } else { %>
+						<article class="message">
+							<div class="message-header">
+								<p>
+									<span class="icon">
+										<i class="fa fa-meh-o"></i>
+									</span>
+									Nothing to see here
+								</p>
+							</div>
+							<div class="message-body">
+								There aren't any ongoing polls on this server. PM GAwesomeBot <code>poll <%= serverData.id %>|#<%= serverData.defaultChannel %></code> to start one.
+							</div>
+						</article>
+					<% } %>
+					<h4 class="subtitle is-4">
+						Giveaways
+					</h4>
+					<% if(giveaways.length>0) { %>
+						<div class="columns">
+							<% for (let i = 0; i < giveaways.length; i++) { %>
+								<div class="column is-half">
+									<div class="card is-fullwidth">
+										<header class="card-header">
+											<p class="card-header-title">
+												#<%= giveaways[i].channel.name %>
+											</p>
+										</header>
+										<div class="card-content">
+											<h3 class="title is-3 has-text-centered">
+												<%= giveaways[i].title %>
+											</h3>
+											<h5 class="subtitle is-5 has-text-centered">
+												Started by <strong>@<%= giveaways[i].creator %></strong>
+											</h5>
+											<div class="level is-mobile">
+												<div class="level-item has-text-centered" title="<%= giveaways[i].rawExpiry %>">
+													<div>
+														<p class="heading">Ends In</p>
+														<p class="title"><%= giveaways[i].relativeExpiry %>h</p>
+													</div>
+												</div>
+												<div class="level-item has-text-centered">
+													<div>
+														<p class="heading">Participants</p>
+														<p class="title"><%= giveaways[i].participants %></p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<footer class="card-footer">
+											<a onclick="endSession('<%= giveaways[i].channel.id %>', 'giveaway');" id="endSession-giveaway-<%= giveaways[i].channel.id %>" class="card-footer-item" title="Secret will still be given away">
+												End Giveaway
+											</a>
+										</footer>
+									</div>
+								</div>
+								<% if (i % 2 === 1 && i !== giveaways.length - 1 && i !== 0) { %>
+									</div>
+									<div class="columns">
+								<% } %>
+							<% } %>
+						</div>
+					<% } else { %>
+						<article class="message">
+							<div class="message-header">
+								<p>
+									<span class="icon">
+										<i class="fa fa-meh-o"></i>
+									</span>
+									Nothing to see here
+								</p>
+							</div>
+							<div class="message-body">
+								There aren't any ongoing giveaways on this server. PM GAwesomeBot <code>giveaway <%= serverData.id %>|#<%= serverData.defaultChannel %></code> to give something away.
+							</div>
+						</article>
+					<% } %>
+					<h4 class="subtitle is-4">
+						Lotteries
+					</h4>
+					<% if (lotteries.length>0) { %>
+						<div class="columns">
+							<% for (let i = 0; i < lotteries.length; i++) { %>
+								<div class="column is-one-third">
+									<div class="card is-fullwidth">
+										<header class="card-header">
+											<p class="card-header-title">
+												#<%= lotteries[i].channel.name %>
+											</p>
+										</header>
+										<div class="card-content">
+											<h4 class="title is-4 has-text-centered">
+												<strong><%= lotteries[i].tickets %></strong> tickets sold so far
+											</h4>
+											<h5 class="subtitle is-5 has-text-centered">
+												Created by <strong><%= lotteries[i].creator %></strong>
+											</h5>
+										</div>
+										<footer class="card-footer">
+											<a onclick="endSession('<%= lotteries[i].channel.id %>', 'lottery');" id="endSession-lottery-<%= lotteries[i].channel.id %>" class="card-footer-item" title="GAwesomePoints will still be given away">
+												End Lottery
+											</a>
+										</footer>
+									</div>
+								</div>
+								<% if (i % 3 === 2 && i !== lotteries.length - 1 && i !== 0) { %>
+									</div>
+									<div class="columns">
+								<% } %>
+							<% } %>
+						</div>
+					<% } else { %>
+						<article class="message">
+							<div class="message-header">
+								<p>
+									<span class="icon">
+										<i class="fa fa-meh-o"></i>
+									</span>
+									<span>Nothing to see here</span>
+								</p>
+							</div>
+							<div class="message-body">
+								There aren't any open lotteries on this server. Start an GAwesomePoints lottery with <code><%= commandPrefix %>lottery start</code>.
+							</div>
+						</article>
+					<% } %>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<% include ../partials/footer %>
+	<% include ../partials/scroll-top-button %>
+</body>
+</html>

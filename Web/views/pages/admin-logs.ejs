@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= serverData.name %> Logs - GAwesomeBot Admin Console</title>
+	<% include ../partials/head %>
+</head>
+<body>
+	<% include ../partials/dashboard-header %>
+
+	<section class="section is-white">
+		<div class="container">
+			<div class="columns">
+				<div id="menu" class="column is-one-quarter">
+					<% include ../partials/admin-menu %>
+				</div>
+				<div class="column">
+					<h1 class="title">
+						Bot Logs
+					</h1>
+					<article class="message is-primary">
+						<div class="message-body">
+							<div class="content">
+								GAwesomeBot records <strong>everything</strong> that it does on your server. This page allows you to view the <strong>past 200 log entries</strong>, in descending order.
+							</div>
+						</div>
+					</article>
+					<form id="search-form" action="<%= currentPage %>" method="get">
+						<input name="svrid" type="hidden" value="<%= serverData.id %>">
+						<div class="field has-addons has-addons-centered">
+							<div class="control">
+								<span class="select">
+									<select name="chid" onchange="$('#search-form').submit();">
+										<option value="">All Channels</option>
+										<% for(var i=0; i<channelData.length; i++) { %>
+											<option value="<%= channelData[i].id %>" <%= channelQuery==channelData[i].id ? "selected" : "" %>>#<%= channelData[i].name %></option>
+										<% } %>
+									</select>
+								</span>
+							</div>
+							<div class="control is-expanded">
+								<input name="q" class="input" type="text" placeholder="I'm looking for..." value="<%= searchQuery %>">
+							</div>
+							<div class="control">
+								<button type="submit" class="button">
+									<span class="icon is-small">
+										<i class="fa fa-search"></i>
+									</span>
+									<span>Search</span>
+								</button>
+							</div>
+						</div>
+					</form>
+					<br>
+					<% for(var i=0; i<logData.length; i++) { %>
+						<article class="media">
+							<figure class="media-left">
+								<span class="icon is-large" style="color: <%= logData[i].levelColor %>;">
+									<i class="fa fa-<%= logData[i].level %> fa-2x"></i>
+								</span>
+							</figure>
+							<div class="media-content">
+								<div class="content">
+									<p>
+										<strong>
+											<%- logData[i].ch ? ("<span title=" + logData[i].chid  + ">#" + logData[i].ch + "</span>") : "" %><%- (logData[i].ch && logData[i].usr) ? ", " : "" %><%- logData[i].usr ? ("<span title=" + logData[i].usrid + ">@" + logData[i].usr + "</span>") : "" %><% (!logData[i].ch && !logData[i].usr) ? "General" : "" %>
+										</strong>
+										<small>
+											<%= logData[i].moment %>
+										</small>
+										<br>
+										<%= logData[i].content %>
+									</p>
+								</div>
+							</div>
+						</article>
+					<% } %>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<% include ../partials/footer %>
+	<% include ../partials/scroll-top-button %>
+</body>
+</html>

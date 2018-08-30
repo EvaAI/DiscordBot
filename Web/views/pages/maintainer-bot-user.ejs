@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bot User - <%= serverData.name %> Maintainer Console</title>
+	<% include ../partials/head %>
+	<script src="/static/js/form-change-listener.js"></script>
+</head>
+<body onload="saveFormState();">
+	<% include ../partials/dashboard-header %>
+	<% include ../partials/dashboard-socket-updates %>
+
+	<section class="section is-white">
+		<div class="container">
+			<div class="columns">
+				<div id="menu" class="column is-one-quarter">
+					<% include ../partials/maintainer-menu %>
+				</div>
+				<div class="column">
+					<h1 class="title">
+						Bot User
+					</h1>
+					<article class="message is-primary">
+						<div class="message-body">
+							<div class="content">
+								This is where you can set details about the bot's <strong>Discord user</strong>, such as username, status, and avatar. These settings may take a while to update.
+							</div>
+						</div>
+					</article>
+					<form id="form" onsubmit="submitForm(); return false;">
+						<div class="columns">
+							<div class="column is-one-third">
+								<div class="field">
+									<img src="<%= bot_user.avatar || 'http://placehold.it/400x400' %>" alt="<%= serverData.id %>" style="width: 100%;">
+									<div class="control has-icons-left">
+										<input name="avatar" class="input" type="text" placeholder="New avatar URL">
+										<span class="icon">
+											<i class="fa fa-file-image-o"></i>
+										</span>
+										<span class="help">HTTP(S) URL to use as the source for <%= serverData.name %>'s new avatar.</span>
+									</div>
+								</div>
+							</div>
+							<div class="column">
+								<div class="field">
+									<label class="label">Username</label>
+									<div class="control has-icons-left">
+										<input name="username" class="input" type="text" value="<%= serverData.name %>" minlength="1">
+										<span class="icon">
+											<i class="fa fa-user"></i>
+										</span>
+										<span class="help">The bot's name on all servers and in PM.</span>
+									</div>
+								</div>
+								<div class="field">
+									<label class="label">Status</label>
+									<div class="control">
+										<span class="select">
+											<select name="status">
+												<option value="online"<%= bot_user.status=="online" ? " selected" : "" %>>Online</option>
+												<option value="idle"<%= bot_user.status=="idle" ? " selected" : "" %>>Idle</option>
+												<option value="dnd"<%= bot_user.status=="dnd" ? " selected" : ""%>>Do Not Disturb</option>
+												<option value="offline"<%= bot_user.status=="offline" ? " selected" : "" %>>Invisible</option>
+											</select>
+										</span>
+										<span class="help">The availability status of the bot, shown in the colored bubble next to the avatar.</span>
+									</div>
+								</div>
+								<div class="field">
+									<label class="label">Game</label>
+									<div class="field has-addons" style="margin-bottom: 0px;">
+										<div class="control has-icons-left is-expanded">
+											<input name="game" id="user-game" class="input" type="text" value="<%= bot_user.game === "default" ? "gawesomebot.com" : bot_user.game %>" style="width: 100%;">
+											<span class="icon"><i class="fa fa-gamepad"></i></span>
+										</div>
+										<div class="control">
+                                        	<% if(!bot_user.game_default) { %>
+												<a name="game-default" class="button" onclick="$('#user-game').val('gawesomebot.com')">
+													Default
+												</a>
+											<% } %>
+										</div>
+									</div>
+									<span class="help">The game the bot appears to be playing, shown under the username.</span>
+								</div>
+							</div>
+						</div>
+						<% var formButtonsUnsaved = false; %>
+						<% include ../partials/form-buttons %>
+						<% include ../partials/form-buttons-bar %>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<% include ../partials/footer %>
+	<% include ../partials/scroll-top-button %>
+</body>
+</html>

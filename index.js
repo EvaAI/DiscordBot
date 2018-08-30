@@ -1,6 +1,6 @@
 require('dotenv').config()
 if (process.env.REPO_BASE_URL === '' || process.env.REPO_BASE_URL === undefined) {
-  process.env.REPO_BASE_URL = 'https://github.com/Hoi15A/simple-discord-bot'
+  process.env.REPO_BASE_URL = 'https://github.com/EvaAI/DiscordBot'
 }
 
 const fs = require('fs')

@@ -140,5 +140,5 @@ client.on('message', msg => {
     }
   }
 })
-
+client.user.setPresence({ game: { name: 'with discord.js' }, status: 'idle' })
 client.login(process.env.DISCORD_TOKEN)

@@ -140,5 +140,5 @@ client.on('message', msg => {
     }
   }
 })
-client.user.setGame('hi')
+client.setGame("xD")
 client.login(process.env.DISCORD_TOKEN)

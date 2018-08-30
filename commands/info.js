@@ -25,7 +25,7 @@ module.exports = {
         'url': process.env.REPO_BASE_URL,
         'color': 1929661,
         'thumbnail': {
-          'url': 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png'
+          'url': 'https://image.ibb.co/n8HuYU/indexpepe.jpg'
         },
         'fields': [
           {
